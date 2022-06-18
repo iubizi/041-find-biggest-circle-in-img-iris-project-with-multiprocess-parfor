@@ -1,12 +1,9 @@
-import gc
-gc.enable()
-
 # import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 import cv2
 
-parameter = 'right'
+parameter = 'left'
 
 ####################
 # 计算距离
@@ -76,7 +73,7 @@ def process(file):
     print(np.min(mask_all), np.max(mask_all))
     print()
 
-    resize = 4 # 缩小2-4倍以便于处理，太大跑不完，太小会导致不精确
+    resize = 2 # 缩小2-4倍以便于处理，太小会导致不精确
     mask_shape = [ mask_all.shape[0]//resize,
                    mask_all.shape[1]//resize ]
 
@@ -127,14 +124,8 @@ def process(file):
     img[:,:,1] *= 255 # float转int
     img[:,:,2] *= 255 # float转int
 
-    # 扩边
-    edge = 200
-    img_big = np.zeros( img.shape +
-                        np.array([edge*2,edge*2,0]), dtype='uint8' )
-    img_big[edge:-edge,edge:-edge,:] = img
-
     try: # 有些图是坏的
-        cv2.circle(img_big, (max_j+edge, max_i+edge), max_r, (255,0,0), -1) # 和蓝色重合能看出来
+        cv2.circle(img, (max_j, max_i), max_r, (255,0,0), -1) # 和蓝色重合能看出来
     except:
         pass
     '''
@@ -143,7 +134,7 @@ def process(file):
     cv2.destroyAllWindows()
     '''
     cv2.imwrite( '003 data mask marked/' + parameter + '/' + file,
-                 cv2.cvtColor(img_big, cv2.COLOR_RGB2BGR) )
+                 cv2.cvtColor(img, cv2.COLOR_RGB2BGR) )
 
 ####################
 # 多进程
